@@ -2,22 +2,19 @@
 ## Beginning the Project
 
 
-Prior to the course I had set up 
+Prior to the course I had set up an AWS Account and followed all the pre-requisites. 
+I watched the first live session and the security and billing videos. 
 
 
 ### Building a Conceptual and Logical Architectural Diagram
 
 
-Using Lucid Charts to creat diagrams, 
+#### Using Lucid Charts to create diagrams
+Following the video instruction I was able to create a conceptual diagram of the cruddur app and understand the basic resource outlay needed to create such an application. [Conceptual Diagram](https://lucid.app/lucidchart/83ea1b85-4349-4dea-9431-a1259ca928e5/edit?viewport_loc=359%2C-100%2C1501%2C876%2C0_0&invitationId=inv_595f0343-0aa0-433e-92e5-1fc313fee478)
+In addition to the conceptual diagram, I created a logical architectural diagram that used an outlay of resources and icons. 
+[Logical Architectural Diagram](https://lucid.app/lucidchart/640f43ed-75de-4b0a-ad95-bf8f1d410979/edit?viewport_loc=-436%2C-77%2C3777%2C2204%2C0_0&invitationId=inv_1fea35f0-84f6-43d6-ac84-d647607478b9)
 
-
-Talk about C4 Models
-
-
-Running through the cloud services we will utilize
-
-
-Testing that we can access our AWS accounts
+#### Account Setup and Billing Alarms 
 Settings up AWS free-tier and understand how to track spend in AWS
 eg . AWS Budgets, AWS Cost Explorer, Billing Alarms
 Understanding how to look at monthly billing reports
