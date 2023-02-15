@@ -15,9 +15,10 @@ In addition to the conceptual diagram, I created a logical architectural diagram
 [Logical Architectural Diagram](https://lucid.app/lucidchart/640f43ed-75de-4b0a-ad95-bf8f1d410979/edit?viewport_loc=-436%2C-77%2C3777%2C2204%2C0_0&invitationId=inv_1fea35f0-84f6-43d6-ac84-d647607478b9)
 
 #### Account Setup and Billing Alarms 
-Settings up AWS free-tier and understand how to track spend in AWS
-eg . AWS Budgets, AWS Cost Explorer, Billing Alarms
-Understanding how to look at monthly billing reports
+The first task was to create a GitPod button on the repo landing page. This was done by downloading and installing the Chrome GitPod extension. 
+When GitHub is opened the button will automatically appear. 
+In GitHub click the GitPod button and continue to the interface. The browser will take you to a new window, using the code found in the student help repository, to add to the start up, the code will create more magic 
+
 Launching AWS CloudShell and looking at AWS CLI
 Generating AWS credentials
 
