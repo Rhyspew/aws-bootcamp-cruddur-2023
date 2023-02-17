@@ -48,7 +48,8 @@ During the session I was able to create three scripts:
   }
 ]
   ```
-  2. Create a Budget Alarm linked to the SNS topic that will trigger when my budget has reached 80%.
+  2. Create a Budget Alarm.
+  ![Budget](https://github.com/Rhyspew/aws-bootcamp-cruddur-2023/blob/main/_docs/assets/Rhys%20Budget%20Proof.png)
   ```json
   {
   "BudgetLimit": {
@@ -82,6 +83,7 @@ During the session I was able to create three scripts:
   "TimeUnit": "MONTHLY"
   ```
   3. Create a CloudWatch Alarm that will trigger when a spending threshold has been met.
+  ![CWAlarm](https://github.com/Rhyspew/aws-bootcamp-cruddur-2023/blob/main/_docs/assets/CWAlarm-Active.png)
   ```json
   {
   "AlarmName": "DailyEstimatedCharges",
@@ -145,14 +147,23 @@ I did this by enabling MFA on the root account. Ensuring the password is strong 
 ### Use EventBridge to Hookup Health Dashboard to SNS and Send a Notification When There is a Service Health Issue
 I used an AWS whitepaper document to find the instructions to complete this task. 
 Using the white paper for [Monitoring AWS Health](https://docs.aws.amazon.com/health/latest/ug/cloudwatch-events-health.html) I was able to follow and create a working alarm that will trigger an SNS message via email whenever an AWS service is down. 
+![EventBridge](https://github.com/Rhyspew/aws-bootcamp-cruddur-2023/blob/main/_docs/assets/EventBridge-AWSHealth.png)
 
 
 ### Review all the questions of each pillars in the Well Architected Tool 
+This is within the Well Architected tool service. 
+Created a workload. 
+
 
 ### Create an architectural diagram (to the best of your ability) the CI/CD logical pipeline in Lucid Charts
 
 ### Research the technical and service limits of specific services and how they could impact the technical path for technical flexibility. 
 
+
 ### Open a support ticket and request a service limit
-This task can be done in the Service Quotas Service.
+This task can be done in the Service Quotas Service. 
+I used the whitepaper [Requesting a Quota Increase](https://docs.aws.amazon.com/servicequotas/latest/userguide/request-quota-increase.html) to find out how to complete this task. I used the management console. 
+![Service Quota options](https://github.com/Rhyspew/aws-bootcamp-cruddur-2023/blob/main/_docs/assets/Service%20Quota%20Menu.png)
+![Service Quota pending](https://github.com/Rhyspew/aws-bootcamp-cruddur-2023/blob/main/_docs/assets/Service%20Quota%20Change%20Pending.png)
+
 
