@@ -10,9 +10,26 @@ Some sensitive information has been altered to protect personal accounts (email 
 
 ### Building a Conceptual Diagram and Logical Architectural Diagram
 
-Following the video instruction I was able to create a conceptual diagram of the cruddur app and understand the basic resource outlay needed to create such an application. [Conceptual Diagram](https://lucid.app/lucidchart/83ea1b85-4349-4dea-9431-a1259ca928e5/edit?viewport_loc=359%2C-100%2C1501%2C876%2C0_0&invitationId=inv_595f0343-0aa0-433e-92e5-1fc313fee478)
-In addition to the conceptual diagram, I created a logical architectural diagram that used an outlay of resources and icons. 
+My [Conceptual Diagram](https://lucid.app/lucidchart/83ea1b85-4349-4dea-9431-a1259ca928e5/edit?viewport_loc=359%2C-100%2C1501%2C876%2C0_0&invitationId=inv_595f0343-0aa0-433e-92e5-1fc313fee478). This diagram is a basic layout of a messaging application that uses front end and back end servers to store and publish messages.
+
+
+![Conceptual Diagram](https://github.com/Rhyspew/aws-bootcamp-cruddur-2023/blob/main/_docs/assets/Course%20Conceptual%20Diagram.png)
+
+
+In addition to the conceptual diagram, I created a logical architectural diagram that used an outlay of AWS icons representing AWS services. 
 [Logical Architectural Diagram](https://lucid.app/lucidchart/640f43ed-75de-4b0a-ad95-bf8f1d410979/edit?viewport_loc=-436%2C-77%2C3777%2C2204%2C0_0&invitationId=inv_1fea35f0-84f6-43d6-ac84-d647607478b9)
+This architecture uses a variety of services to make the aim of the conceptual diagram possible. 
+It uses Route 53 for DNS
+Cognito for User Authentication
+EC2 containers and an Application Load Balancer. 
+RDS and DynamoDB as the database services. 
+AppSync combines data from DynamoDb and RDS for queries. 
+External service Memento for caching
+There is also a serverless solution for processing avatar images using Lambda and an S3 bucket. 
+
+
+![Architecture](https://github.com/Rhyspew/aws-bootcamp-cruddur-2023/blob/main/_docs/assets/LogicalArchitectureDiagram.png)
+
 
 ### Account Setup and Billing Alarms 
 The first task was to create a GitPod button on the repo landing page. This was done by downloading and installing the Chrome GitPod extension. 
@@ -28,7 +45,10 @@ sudo ./aws/install
 ```
 I saved my AWS access keys to the environmental data which allow access to my AWS account. 
 
-During the session I was able to create three scripts:
+I went into the management console as the rootuser to enable billing. 
+I did this by searching for Billing in the service menu, selecting billing preferences and checking 'Receive Billing Alerts'. 
+
+During the GitPod session I was able to create three scripts:
   1. Create a budget with notifications via SNS. 
   ```json
   [
@@ -49,6 +69,7 @@ During the session I was able to create three scripts:
 ]
   ```
   2. Create a Budget Alarm.
+  
   ![Budget](https://github.com/Rhyspew/aws-bootcamp-cruddur-2023/blob/main/_docs/assets/Rhys%20Budget%20Proof.png)
   ```json
   {
@@ -83,6 +104,7 @@ During the session I was able to create three scripts:
   "TimeUnit": "MONTHLY"
   ```
   3. Create a CloudWatch Alarm that will trigger when a spending threshold has been met.
+  
   ![CWAlarm](https://github.com/Rhyspew/aws-bootcamp-cruddur-2023/blob/main/_docs/assets/CWAlarm-Active.png)
   ```json
   {
@@ -147,23 +169,43 @@ I did this by enabling MFA on the root account. Ensuring the password is strong 
 ### Use EventBridge to Hookup Health Dashboard to SNS and Send a Notification When There is a Service Health Issue
 I used an AWS whitepaper document to find the instructions to complete this task. 
 Using the white paper for [Monitoring AWS Health](https://docs.aws.amazon.com/health/latest/ug/cloudwatch-events-health.html) I was able to follow and create a working alarm that will trigger an SNS message via email whenever an AWS service is down. 
+
+
 ![EventBridge](https://github.com/Rhyspew/aws-bootcamp-cruddur-2023/blob/main/_docs/assets/EventBridge-AWSHealth.png)
 
 
 ### Review all the questions of each pillars in the Well Architected Tool 
 This is within the Well Architected tool service. 
-Created a workload. 
+Created a workload. Proceded to review questions.
+
+Each question helps paint a picture of the goals, needs, risks, compliance requirements, potential tradeoffs and benefits a business would be considering when moving to the cloud. All factors are affected when one pillar of the well architected framework is considered over the other, a balance has to be met that satisfies the business needs while managing risk and potential issues. The six pillars are displayed below with the number of questions required to answer in the well architected tool. 
+
+
+![Questions](https://github.com/Rhyspew/aws-bootcamp-cruddur-2023/blob/main/_docs/assets/Well%20Architected%20Tool.png)
 
 
 ### Create an architectural diagram (to the best of your ability) the CI/CD logical pipeline in Lucid Charts
+My [CICD Logical Architecure Diagram](https://lucid.app/lucidchart/967e7dad-53de-45c6-bccb-dc203e7ff0a2/edit?viewport_loc=-291%2C-430%2C2363%2C1180%2C0_0&invitationId=inv_92950db0-57c7-47c0-ab49-689aa87e3baf). This diagram shows a CICD Pipeline using Code Pipeline. 
+The user will commit code to a repository such as GitHub or CodeCommit. The commit must contain a file named buildspec.yaml to carry out a build.  
 
-### Research the technical and service limits of specific services and how they could impact the technical path for technical flexibility. 
+Next the build stage. CodeBuild will pull the code from the CodeCommit repo and build the code in an isolated environment. If at any stage the build fails the user will be notified of the error in the code, reducing the time taken to fix bugs and typos. 
+
+After successful builds, CodeBuild will generate a CloudFormation Template file into Amazon S3. 
+
+The deploy stage will deploy the cloudformation template, either to development and test, or to production environments.
+
+
+![CICD Diagram](https://github.com/Rhyspew/aws-bootcamp-cruddur-2023/blob/main/_docs/assets/CICD.png)
 
 
 ### Open a support ticket and request a service limit
 This task can be done in the Service Quotas Service. 
-I used the whitepaper [Requesting a Quota Increase](https://docs.aws.amazon.com/servicequotas/latest/userguide/request-quota-increase.html) to find out how to complete this task. I used the management console. 
+I used the whitepaper [Requesting a Quota Increase](https://docs.aws.amazon.com/servicequotas/latest/userguide/request-quota-increase.html) to find out how to complete this task. I completed the task using the Management Console. 
+
+
 ![Service Quota options](https://github.com/Rhyspew/aws-bootcamp-cruddur-2023/blob/main/_docs/assets/Service%20Quota%20Menu.png)
+
+
 ![Service Quota pending](https://github.com/Rhyspew/aws-bootcamp-cruddur-2023/blob/main/_docs/assets/Service%20Quota%20Change%20Pending.png)
 
 
