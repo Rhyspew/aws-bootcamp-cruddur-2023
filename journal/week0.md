@@ -199,7 +199,9 @@ The deploy stage will deploy the cloudformation template, either to development 
 
 
 ### Open a support ticket and request a service limit
-This task can be done in the Service Quotas Service. 
+Service limits are important so that AWS can manage individual use of resources but when an organisation grows it becomes a block on growth, such as limiting use to five VPCs per region or a cap on running EC2 instances. There may be need to expand AWS usage for business or project requirements, this can be presented to AWS via the quota service to increase resource quota.  
+
+This task can be done in the Service Quotas menu. 
 I used the whitepaper [Requesting a Quota Increase](https://docs.aws.amazon.com/servicequotas/latest/userguide/request-quota-increase.html) to find out how to complete this task. I completed the task using the Management Console. 
 
 
