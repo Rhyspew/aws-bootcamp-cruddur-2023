@@ -225,7 +225,120 @@ Notifications page of app shown below.
 
 ## Running and Testing DynamoDB and Postgres containers 
 
+Update to .gitpod.yml to install postgres extension on GitPod startup. 
+
+Lines 11 - 16
+
+```yml
+ - name: postgres
+    init: |
+      curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc|sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/postgresql.gpg
+      echo "deb http://apt.postgresql.org/pub/repos/apt/ `lsb_release -cs`-pgdg main" |sudo tee  /etc/apt/sources.list.d/pgdg.list
+      sudo apt update
+      sudo apt install -y postgresql-client-13 libpq-dev
+```
+
+Line 20
+
+```yml
+ - cweijan.vscode-postgresql-client2
+```
+
+Create .gitignore file
+
+```sh
+docker/**/*
+```
+
+Update to docker-compose.yml that includes build of DynamoDB and Postgre databases
+
+Lines 39 - 71
+
+```yml
+dynamodb-local:
+    # https://stackoverflow.com/questions/67533058/persist-local-dynamodb-data-in-volumes-lack-permission-unable-to-open-databa
+    # We needed to add user:root to get this working.
+    user: root
+    command: "-jar DynamoDBLocal.jar -sharedDb -dbPath ./data"
+    image: "amazon/dynamodb-local:latest"
+    container_name: dynamodb-local
+    ports:
+      - "8000:8000"
+    volumes:
+      - "./docker/dynamodb:/home/dynamodblocal/data"
+    working_dir: /home/dynamodblocal
+  db:
+    image: postgres:13-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+    ports:
+      - '5432:5432'
+    volumes: 
+      - db:/var/lib/postgresql/data
+
+# the name flag is a hack to change the default prepend folder
+# name when outputting the image names
+networks: 
+  internal-network:
+    driver: bridge
+    name: cruddur
+
+volumes:
+  db:
+    driver: local
+```    
+
+Once update to docker-compose.yml was complete, I ran docker compose up. When build was complete I changed all ports to public. 
 
 
+Testing DynamoDB local. Create a table. If successful a JSON script will be returned in the terminal with details of the DynamoDB table.
 
+```sh
+aws dynamodb create-table \
+    --endpoint-url http://localhost:8000 \
+    --table-name Music \
+    --attribute-definitions \
+        AttributeName=Artist,AttributeType=S \
+        AttributeName=SongTitle,AttributeType=S \
+    --key-schema AttributeName=Artist,KeyType=HASH AttributeName=SongTitle,KeyType=RANGE \
+    --provisioned-throughput ReadCapacityUnits=1,WriteCapacityUnits=1 \
+    --table-class STANDARD
+```
+
+Create an item in the table. A JSON will return on completion displaying item details.
+
+```sh
+aws dynamodb put-item \
+    --endpoint-url http://localhost:8000 \
+    --table-name Music \
+    --item \
+        '{"Artist": {"S": "No One You Know"}, "SongTitle": {"S": "Call Me Today"}, "AlbumTitle": {"S": "Somewhat Famous"}}' \
+    --return-consumed-capacity TOTAL  
+```  
+
+Check table by calling DynamoDB lists. 
+
+```sh
+aws dynamodb list-tables --endpoint-url http://localhost:8000
+```
+
+Testing Postgres DB
+
+In GitPod go to database menu, add a new DB connection. 
+
+Enter details and password for postgres DB.
+
+
+Enter in terminal
+
+```sh
+psql -Upostgres --host localhost
+```
+
+
+Enter password used in connection setup.
+
+enter \l to see Postgre DB list.
 
