@@ -120,4 +120,112 @@ For this to run, NPM must be installed.
 
 When this is run both containers are linked which allow data to be transferred. Make sure both 3000 and 4567 ports have been made public by 'unlocking' them. 
 
-I have amended some details in the home_activities file in the services directory so that some comments appear in the home page.
+I have amended some details in the home_activities file in the services directory so that alternative comments appear in the home page.
+
+## OpenAI and Notification Page additions to Frontend and Backend
+
+### Backend
+
+I updated the [Open-api-3.0.yml](https://github.com/Rhyspew/aws-bootcamp-cruddur-2023/blob/Week1(Test)/backend-flask/openapi-3.0.yml) file in the backend-flask folder to contain an endpoint for the notifications page. 
+I used [Open-API Specification](https://swagger.io/specification/) to learn how to implement this feature. 
+
+Added lines 151 - 165
+```yml
+ /api/activities/notifications:
+    get:
+      description: 'Return a feed of activity for all of those that I follow'
+      tags:
+        - activities
+      parameters: []
+      responses:
+        '200':
+          description: Returns an array of activities
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Activity'
+``` 
+
+In the [app.py](https://github.com/Rhyspew/aws-bootcamp-cruddur-2023/blob/Week1(Test)/backend-flask/app.py) file, the following was added as a route to  notifications. 
+
+Added in line 7
+
+```py
+from services.notifications_activities import *
+```
+
+Added in lines 69 - 72
+
+```py
+@app.route("/api/activities/notifications", methods=['GET'])
+def data_notifications():
+  data = NotificationsActivities.run()
+  return data, 200
+```
+
+The file [notifications_activities.py](https://github.com/Rhyspew/aws-bootcamp-cruddur-2023/blob/Week1(Test)/backend-flask/services/notifications_activities.py) was created as an endpoint for notfication information. 
+
+```py
+from datetime import datetime, timedelta, timezone
+class NotificationsActivities:
+  def run():
+    now = datetime.now(timezone.utc).astimezone()
+    results = [{
+      'uuid': '68f126b0-1ceb-4a33-88be-d90fa7109eee',
+      'handle':  'Bruce Wayne',
+      'message': 'I am Batman',
+      'created_at': (now - timedelta(days=2)).isoformat(),
+      'expires_at': (now + timedelta(days=5)).isoformat(),
+      'likes_count': 5,
+      'replies_count': 1,
+      'reposts_count': 0,
+      'replies': [{
+        'uuid': '26e12864-1c26-5c3a-9658-97a10f8fea67',
+        'reply_to_activity_uuid': '68f126b0-1ceb-4a33-88be-d90fa7109eee',
+        'handle':  'Barry Allen',
+        'message': 'I am the fastest man alive',
+        'likes_count': 0,
+        'replies_count': 0,
+        'reposts_count': 0,
+        'created_at': (now - timedelta(days=2)).isoformat()
+      }],
+    }
+    ]
+    return results
+```
+
+
+### Frontend
+
+The file [app.js](https://github.com/Rhyspew/aws-bootcamp-cruddur-2023/blob/Week1(Test)/frontend-react-js/src/App.js) was updated to include a route to the notifications page. 
+
+Added to line 4
+
+```js
+import NotificationsFeedPage from './pages/NotificationsFeedPage';
+```
+Added to lines 23 - 26
+
+```js
+ {
+    path: "/notifications",
+    element: <NotificationsFeedPage />
+  },
+  ```
+
+[NotificationsFeedPage.js](https://github.com/Rhyspew/aws-bootcamp-cruddur-2023/blob/Week1(Test)/frontend-react-js/src/pages/NotificationsFeedPage.js) and [NotificationsFeedPage.css](https://github.com/Rhyspew/aws-bootcamp-cruddur-2023/blob/Week1(Test)/frontend-react-js/src/pages/NotificationsFeedPage.js) created to create a frontend page for notifications within the Cruddur app. I used the HomeFeedPage.js as a template for the notifcations feed page and changed line 1
+
+```js
+import './NotificationsFeedPage.css';
+```
+Notifications page of app shown below. 
+
+
+## Running and Testing DynamoDB and Postgres containers 
+
+
+
+
+
