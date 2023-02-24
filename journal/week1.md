@@ -9,7 +9,7 @@ This can be done by searching for docker in the GitPod extension icon on the lef
 
 ### Backend 
 
-I created a Dockerfile within the backend-flask folder. The file contains the code:
+I created a [Dockerfile](https://github.com/Rhyspew/aws-bootcamp-cruddur-2023/blob/main/backend-flask/Dockerfile) within the backend-flask folder. The file contains the code:
 
 ```dockerfile
 FROM python:3.10-slim-buster
@@ -49,7 +49,7 @@ docker container run --rm -p 4567:4567 -d backend-flask
 
 ### Frontend
 
-I created a new file called Dockerfile in the frontend-react-js folder.
+I created a new file called [Dockerfile](https://github.com/Rhyspew/aws-bootcamp-cruddur-2023/blob/main/frontend-react-js/Dockerfile) in the frontend-react-js folder.
 
 ```dockerfile
 FROM node:16.18
@@ -83,6 +83,7 @@ docker run -p 3000:3000 -d frontend-react-js
 ```
 
 The container will run up but isolated from the back end. Check the result by unlocking port 3000 under the ports tab, copy the link and follow in the browser. 
+
 
 ### Docker Compose
 In the root directory aws-bootcamp-cruddur-2023 create a file called docker-compose.yml containing the following:
@@ -122,11 +123,13 @@ When this is run both containers are linked which allow data to be transferred. 
 
 I have amended some details in the home_activities file in the services directory so that alternative comments appear in the home page.
 
+![HomePage](https://github.com/Rhyspew/aws-bootcamp-cruddur-2023/blob/main/_docs/assets/HomePage.png)
+
 ## OpenAI and Notification Page additions to Frontend and Backend
 
 ### Backend
 
-I updated the [Open-api-3.0.yml](https://github.com/Rhyspew/aws-bootcamp-cruddur-2023/blob/Week1(Test)/backend-flask/openapi-3.0.yml) file in the backend-flask folder to contain an endpoint for the notifications page. 
+I updated the [Open-api-3.0.yml](https://github.com/Rhyspew/aws-bootcamp-cruddur-2023/blob/main/backend-flask/openapi-3.0.yml) file in the backend-flask folder to contain an endpoint for the notifications page. 
 I used [Open-API Specification](https://swagger.io/specification/) to learn how to implement this feature. 
 
 Added lines 151 - 165
@@ -148,7 +151,7 @@ Added lines 151 - 165
                   $ref: '#/components/schemas/Activity'
 ``` 
 
-In the [app.py](https://github.com/Rhyspew/aws-bootcamp-cruddur-2023/blob/Week1(Test)/backend-flask/app.py) file, the following was added as a route to  notifications. 
+In the [app.py]((https://github.com/Rhyspew/aws-bootcamp-cruddur-2023/blob/main/backend-flask/app.py) file, the following was added as a route to  notifications. 
 
 Added in line 7
 
@@ -165,7 +168,7 @@ def data_notifications():
   return data, 200
 ```
 
-The file [notifications_activities.py](https://github.com/Rhyspew/aws-bootcamp-cruddur-2023/blob/Week1(Test)/backend-flask/services/notifications_activities.py) was created as an endpoint for notfication information. 
+The file [notifications_activities.py](https://github.com/Rhyspew/aws-bootcamp-cruddur-2023/blob/main/backend-flask/services/notifications_activities.py) was created as an endpoint for notfication information. 
 
 ```py
 from datetime import datetime, timedelta, timezone
@@ -199,7 +202,7 @@ class NotificationsActivities:
 
 ### Frontend
 
-The file [app.js](https://github.com/Rhyspew/aws-bootcamp-cruddur-2023/blob/Week1(Test)/frontend-react-js/src/App.js) was updated to include a route to the notifications page. 
+The file [app.js](https://github.com/Rhyspew/aws-bootcamp-cruddur-2023/blob/main/frontend-react-js/src/App.js) was updated to include a route to the notifications page. 
 
 Added to line 4
 
@@ -215,13 +218,14 @@ Added to lines 23 - 26
   },
   ```
 
-[NotificationsFeedPage.js](https://github.com/Rhyspew/aws-bootcamp-cruddur-2023/blob/Week1(Test)/frontend-react-js/src/pages/NotificationsFeedPage.js) and [NotificationsFeedPage.css](https://github.com/Rhyspew/aws-bootcamp-cruddur-2023/blob/Week1(Test)/frontend-react-js/src/pages/NotificationsFeedPage.js) created to create a frontend page for notifications within the Cruddur app. I used the HomeFeedPage.js as a template for the notifcations feed page and changed line 1
+[NotificationsFeedPage.js](https://github.com/Rhyspew/aws-bootcamp-cruddur-2023/blob/main/frontend-react-js/src/pages/NotificationsFeedPage.js) and [NotificationsFeedPage.css](https://github.com/Rhyspew/aws-bootcamp-cruddur-2023/blob/main/frontend-react-js/src/pages/NotificationsFeedPage.css) created to create a frontend page for notifications within the Cruddur app. I used the HomeFeedPage.js as a template for the notifcations feed page and changed line 1
 
 ```js
 import './NotificationsFeedPage.css';
 ```
 Notifications page of app shown below. 
 
+![NotificationsPage](https://github.com/Rhyspew/aws-bootcamp-cruddur-2023/blob/main/_docs/assets/NotificationPage.png)
 
 ## Running and Testing DynamoDB and Postgres containers 
 
@@ -293,7 +297,9 @@ volumes:
 Once update to docker-compose.yml was complete, I ran docker compose up. When build was complete I changed all ports to public. 
 
 
-Testing DynamoDB local. Create a table. If successful a JSON script will be returned in the terminal with details of the DynamoDB table.
+#### Testing DynamoDB local. 
+
+Create a table. If successful a JSON script will be returned in the terminal with details of the DynamoDB table.
 
 ```sh
 aws dynamodb create-table \
@@ -307,6 +313,9 @@ aws dynamodb create-table \
     --table-class STANDARD
 ```
 
+![DynamoDB](https://github.com/Rhyspew/aws-bootcamp-cruddur-2023/blob/main/_docs/assets/DynamoDBTableCreate.png)
+
+
 Create an item in the table. A JSON will return on completion displaying item details.
 
 ```sh
@@ -318,17 +327,25 @@ aws dynamodb put-item \
     --return-consumed-capacity TOTAL  
 ```  
 
+![ItemInput](https://github.com/Rhyspew/aws-bootcamp-cruddur-2023/blob/main/_docs/assets/DynamoDBItemInput.png)
+
+
 Check table by calling DynamoDB lists. 
 
 ```sh
 aws dynamodb list-tables --endpoint-url http://localhost:8000
 ```
 
-Testing Postgres DB
+![ListTable](https://github.com/Rhyspew/aws-bootcamp-cruddur-2023/blob/main/_docs/assets/DynamoDBListTable.png)
+
+
+#### Testing Postgres DB
 
 In GitPod go to database menu, add a new DB connection. 
 
 Enter details and password for postgres DB.
+
+![Postgres setup](https://github.com/Rhyspew/aws-bootcamp-cruddur-2023/blob/main/_docs/assets/PostgresSetup.png)
 
 
 Enter in terminal
@@ -342,3 +359,4 @@ Enter password used in connection setup.
 
 enter \l to see Postgre DB list.
 
+![postgresTest](https://github.com/Rhyspew/aws-bootcamp-cruddur-2023/blob/main/_docs/assets/PostgresTest.png)
