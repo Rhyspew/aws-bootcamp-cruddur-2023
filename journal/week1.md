@@ -360,3 +360,140 @@ Enter password used in connection setup.
 enter \l to see Postgre DB list.
 
 ![postgresTest](https://github.com/Rhyspew/aws-bootcamp-cruddur-2023/blob/main/_docs/assets/PostgresTest.png)
+
+
+## Homework Challenges
+
+## Install docker on local machine 
+
+Download Docker from [Docker Desktop](https://www.docker.com/products/docker-desktop/), choose the required OS and follow installation steps.
+
+Pulled Hello-World from DockerHub to test installation.
+
+```ssh
+Rhys@Rhyss-Air ~ % docker run hello-world
+Unable to find image 'hello-world:latest' locally
+latest: Pulling from library/hello-world
+2db29710123e: Pull complete 
+Digest: sha256:6e8b6f026e0b9c419ea0fd02d3905dd0952ad1feea67543f525c73a0a790fefb
+Status: Downloaded newer image for hello-world:latest
+
+Hello from Docker!
+This message shows that your installation appears to be working correctly.
+
+To generate this message, Docker took the following steps:
+ 1. The Docker client contacted the Docker daemon.
+ 2. The Docker daemon pulled the "hello-world" image from the Docker Hub.
+    (amd64)
+ 3. The Docker daemon created a new container from that image which runs the
+    executable that produces the output you are currently reading.
+ 4. The Docker daemon streamed that output to the Docker client, which sent it
+    to your terminal.
+
+To try something more ambitious, you can run an Ubuntu container with:
+ $ docker run -it ubuntu bash
+
+Share images, automate workflows, and more with a free Docker ID:
+ https://hub.docker.com/
+
+For more examples and ideas, visit:
+ https://docs.docker.com/get-started/
+```
+
+
+### Launch an EC2 and Pull a Docker Container
+
+Used instruction from this [Tutorial](https://medium.com/bb-tutorials-and-thoughts/running-docker-containers-on-aws-ec2-9b17add53646) to complete this task. 
+
+I ran up an instance in Amazon EC2 to complete this task. Details as follows:
+AMI - Amazon Linux 2 x64
+Instance Type - t2.micro
+Region - us-east-1 (N. Virginia)
+Default VPC and Subnets
+Security Group - Allow HTTP (Port 80) and SSH (Port 22)
+Created a key pair. 
+Start the instance.
+
+Connect via SSH into the instance through terminal and AWS CLI. Updated packages when logged in. 
+
+```sh
+Rhys@Rhyss-Air Downloads % chmod 400 DockerTest.pem
+Rhys@Rhyss-Air Downloads % ssh -i "DockerTest.pem" ec2-user@ec2-54-210-173-164.compute-1.amazonaws.com
+The authenticity of host 'ec2-54-210-173-164.compute-1.amazonaws.com (54.210.173.164)' can't be established.
+ECDSA key fingerprint is SHA256:DcGaK2H/zmce1GOyS+Lw8zUko9EPB7qtTryISTl1LR8.
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+Warning: Permanently added 'ec2-54-210-173-164.compute-1.amazonaws.com,54.210.173.164' (ECDSA) to the list of known hosts.
+
+       __|  __|_  )
+       _|  (     /   Amazon Linux 2 AMI
+      ___|\___|___|
+
+https://aws.amazon.com/amazon-linux-2/
+No packages needed for security; 5 packages available
+Run "sudo yum update" to apply all updates.
+[ec2-user@ip-172-31-63-204 ~]$ sudo yum update -y
+```
+
+I installed docker onto the instance
+
+```sh
+[ec2-user@ip-172-31-63-204 ~]$ sudo amazon-linux-extras install docker
+Installing docker
+```
+
+Run docker, modify permissions, log out of ec2-user to activiate permissions on next login. 
+
+```sh
+[ec2-user@ip-172-31-63-204 ~]$ sudo service docker start
+Redirecting to /bin/systemctl start docker.service
+[ec2-user@ip-172-31-63-204 ~]$ sudo usermod -a -G docker ec2-user
+[ec2-user@ip-172-31-63-204 ~]$ logout
+Connection to ec2-54-210-173-164.compute-1.amazonaws.com closed.
+```
+
+Log back into ec2-user, pull and run dockerfile.
+
+```sh
+Rhys@Rhyss-Air Downloads % ssh -i "DockerTest.pem" ec2-user@ec2-54-210-173-164.compute-1.amazonaws.com
+Last login: Thu Feb 23 21:17:22 2023 from 81.170.93.110
+
+       __|  __|_  )
+       _|  (     /   Amazon Linux 2 AMI
+      ___|\___|___|
+
+https://aws.amazon.com/amazon-linux-2/
+[ec2-user@ip-172-31-63-204 ~]$ docker --version
+Docker version 20.10.17, build 100c701
+[ec2-user@ip-172-31-63-204 ~]$ docker pull bbachin1/node-api
+Using default tag: latest
+latest: Pulling from bbachin1/node-api
+e6b0cf9c0882: Pull complete 
+616b6dd285e6: Pull complete 
+80c84100e8e0: Pull complete 
+ea5cb4d1ea5a: Pull complete 
+5eb02904f8a0: Pull complete 
+f781607962ac: Pull complete 
+50c07c0cb4ed: Pull complete 
+Digest: sha256:94149e88d71d741257b7eedd332ab4d388ebf3ea5651b317f52b782c78c4e504
+Status: Downloaded newer image for bbachin1/node-api:latest
+docker.io/bbachin1/node-api:latest
+[ec2-user@ip-172-31-63-204 ~]$ docker images
+REPOSITORY          TAG       IMAGE ID       CREATED       SIZE
+bbachin1/node-api   latest    e2cd43428a81   3 years ago   85.4MB
+[ec2-user@ip-172-31-63-204 ~]$ docker run -d -p 80:3000 --name nodeapi bbachin1/node-api
+13eb043162fb86d01d7f03fc413dfa1dbec88bad482c1454795ef0d2306b3efe
+```
+
+Check docker is running and execute
+
+```sh
+[ec2-user@ip-172-31-63-204 ~]$ docker ps
+CONTAINER ID   IMAGE               COMMAND       CREATED         STATUS         PORTS                                   NAMES
+13eb043162fb   bbachin1/node-api   "npm start"   6 seconds ago   Up 5 seconds   0.0.0.0:80->3000/tcp, :::80->3000/tcp   nodeapi
+[ec2-user@ip-172-31-63-204 ~]$ docker exec -it nodeapi /bin/sh
+/api #
+```
+
+The result of docker execute is displayed in the picture below. 
+
+![Resultofdockerpull](https://github.com/Rhyspew/aws-bootcamp-cruddur-2023/blob/main/_docs/assets/EC2DockerOutcome.png)
