@@ -151,7 +151,7 @@ Added lines 151 - 165
                   $ref: '#/components/schemas/Activity'
 ``` 
 
-In the [app.py]((https://github.com/Rhyspew/aws-bootcamp-cruddur-2023/blob/main/backend-flask/app.py) file, the following was added as a route to  notifications. 
+In the [app.py](https://github.com/Rhyspew/aws-bootcamp-cruddur-2023/blob/main/backend-flask/app.py) file, the following was added as a route to  notifications. 
 
 Added in line 7
 
@@ -248,7 +248,7 @@ Line 20
  - cweijan.vscode-postgresql-client2
 ```
 
-Create .gitignore file
+Create .gitignore file in root directory. This is to help improve app performance by adding unimportant files to this location to free up container space. 
 
 ```sh
 docker/**/*
@@ -400,7 +400,6 @@ For more examples and ideas, visit:
  https://docs.docker.com/get-started/
 ```
 
-
 ### Launch an EC2 and Pull a Docker Container
 
 Used instruction from this [Tutorial](https://medium.com/bb-tutorials-and-thoughts/running-docker-containers-on-aws-ec2-9b17add53646) to complete this task. 
@@ -441,7 +440,7 @@ I installed docker onto the instance
 Installing docker
 ```
 
-Run docker, modify permissions, log out of ec2-user to activiate permissions on next login. 
+Start docker, modify permissions, log out of ec2-user to activiate permissions on next login. 
 
 ```sh
 [ec2-user@ip-172-31-63-204 ~]$ sudo service docker start
@@ -497,3 +496,11 @@ CONTAINER ID   IMAGE               COMMAND       CREATED         STATUS         
 The result of docker execute is displayed in the picture below. 
 
 ![Resultofdockerpull](https://github.com/Rhyspew/aws-bootcamp-cruddur-2023/blob/main/_docs/assets/EC2DockerOutcome.png)
+
+### Links to useful resources
+Creating dockerfile multistage builds [A beginners guide to a multistage docker build](https://www.techtarget.com/searchitoperations/tip/A-beginners-guide-to-a-multistage-Docker-build)
+
+Push and Tag dockerfiles [How to build a Docker image and upload it to Docker Hub](https://www.techrepublic.com/article/how-to-build-a-docker-image-and-upload-it-to-docker-hub/)
+
+[Best Practices for working with Dockerfiles](https://medium.com/@BeNitinAgarwal/best-practices-for-working-with-dockerfiles-fb2d22b78186)
+
