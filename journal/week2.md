@@ -1,1 +1,230 @@
 # Week 2 — Distributed Tracing
+
+### Update Gitpod Installations
+This week I updated .gitpod.yml to include the npm install required to run the front end docker build. 
+
+Add the following to the task section:
+```yml
+ - name: react-js
+    command: |
+      cd frontend-react-js
+      npm i
+```
+
+In addition, create a step at the end of the file to make frontend and backend servers public automatically:
+```yml
+ports:
+  - name: frontend
+    port: 3000
+    onOpen: open-browser
+    visibility: public
+  - name: backend
+    port: 4567
+    visibility: public
+  - name: xray-daemon
+    port: 2000
+    visibility: public
+```
+
+Notice the inclusion of a port for xray which will be used later in this weeks tasks. 
+
+
+## Honeycomb
+Honeycomb allows users to monitor activity within an application to help the user monitor performance and pinpoint problems that arise. 
+See [Honeycomb](https://www.honeycomb.io/) for more details. 
+
+### Integrate Honeycomb into the app
+Create a Honeycomb account. In the account create a new environment then take note of the api key. 
+
+In the terminal export and save details of the api key to environment variables and repeat with and aws service name.  
+
+```sh
+export HONEYCOMB_API_KEY="APIKEY"
+export HONEYCOMB_SERVICE_NAME="Cruddur"
+
+gp env HONEYCOMB_API_KEY="APIKey"
+gp env HONEYCOMB_SERVICE_NAME="Cruddur"
+```
+Check the variables have saved by entering the command: env | grep HONEY
+The command should return the saved variables. 
+
+In the backend-flask folder edit the requirements.txt folder. 
+Add the following underneath the last entry;
+
+```
+opentelemetry-api
+opentelemetry-sdk
+opentelemetry-exporter-otlp-proto-http
+opentelemetry-instrumentation-flask
+opentelemetry-instrumentation-requests
+```
+
+Run the file to install tools: pip install -r requirements.txt
+
+Update the docker-compose.yml file, add into the backend-flask environment variables pasge:
+
+```yml
+OTEL_SERVICE_NAME: 'backend-flask'
+OTEL_EXPORTER_OTLP_ENDPOINT: "https://api.honeycomb.io"
+OTEL_EXPORTER_OTLP_HEADERS: "x-honeycomb-team=${HONEYCOMB_API_KEY}"
+``` 
+
+In the app.py folder ensure the following code is entered, it will allow tracing for the honeycomb console:
+
+```py
+from opentelemetry import trace
+from opentelemetry.instrumentation.flask import FlaskInstrumentor
+from opentelemetry.instrumentation.requests import RequestsInstrumentor
+from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
+from opentelemetry.sdk.trace import TracerProvider
+from opentelemetry.sdk.trace.export import BatchSpanProcessor
+from opentelemetry.sdk.trace.export import ConsoleSpanExporter, SimpleSpanProcessor
+```
+
+Then add in another block:
+```py
+provider = TracerProvider()
+processor = BatchSpanProcessor(OTLPSpanExporter())
+provider.add_span_processor(processor)
+
+simple_processor = SimpleSpanProcessor(ConsoleSpanExporter())
+provider.add_span_processor(simple_processor)
+
+trace.set_tracer_provider(provider)
+tracer = trace.get_tracer(__name__)
+```
+
+Then enter under 'app = Flask(_name_)'
+```py
+FlaskInstrumentor().instrument_app(app)
+RequestsInstrumentor().instrument()
+```
+
+Enter 'docker compose up' in console and start the containers. 
+Copy the backend server link and follow in a new window or tab, add /api/activities/home to the end of it and enter in browser. Refresh a few times. 
+Go to the honeycomb console and check the home page to confirm if data has been traced, a 404 code and a few 200 codes should have been saved if successful so far.
+
+Update the backend file home_activities.js, entries to the beginning and end of the code. 
+Enter after the first entry then incorporate the rest into the function, make sure the code is indented correctly. 
+
+```py
+from opentelemetry import trace
+
+tracer = trace.get_tracer("home.activities")
+
+class HomeActivities:
+  def run():
+    with tracer.start_as_current_span("home-activites-mock-data"):
+      span = trace.get_current_span()
+```
+
+Add to the end of the code just before 'return results'
+
+```py
+span.set_attribute("app.result_length", len(results))
+```
+Repeat refresh of backend link with api/activities/home url. Check honeycomb for results. 
+
+## X-Ray
+
+In requirements.txt enter the following 'aws-xray-sdk' in the next line of the file. This will download the plugin for the Xray SDK. 
+
+Install by entering ' pip install -r requirements.txt'
+
+Create a json file in aws/json for the xray sampling rule. 
+
+In backend-flask, edit the app.py file. 
+Add in the following after the first block of honeycomb code
+
+```py
+from aws_xray_sdk.core import xray_recorder
+from aws_xray_sdk.ext.flask.middleware import XRayMiddleware
+```
+
+Add in after the second block of honeycomb code:
+
+```py
+xray_url = os.getenv("AWS_XRAY_URL")
+xray_recorder.configure(service='backend-flask', dynamic_naming=xray_url)
+```
+
+Add in after 'app = Flask(_name_)'
+```py
+XRayMiddleware(app, xray_recorder)
+```
+
+Entered the following command into the terminal and saw the json script returned. The returned json confirmed the group was created. 
+
+```sh
+gitpod /workspace/aws-bootcamp-cruddur-2023/backend-flask (Week2) $ aws xray create-group \
+> --group-name "Cruddur" \
+> --filter-expression "service(\"backend-flask\")"
+{
+    "Group": {
+        "GroupName": "Cruddur",
+        "GroupARN": "arn:aws:xray:us-east-1:926994502331:group/Cruddur/QYUAU6FLGUHYWGFEK2WYBZQ3ENJDWUUXRITGQSC6USUMMM2C7PMQ",
+        "FilterExpression": "service(\"backend-flask\")",
+        "InsightsConfiguration": {
+            "InsightsEnabled": false,
+            "NotificationsEnabled": false
+        }
+    }
+}
+```
+
+Go to aws management console, find the cruddur group in cloudwatch>settings>traces>groups
+
+Enter the following code to insert parameters using json file in aws>json 
+
+```sh
+gitpod /workspace/aws-bootcamp-cruddur-2023 (Week2) $ aws xray create-sampling-rule --cli-input-json file://aws/json/xray.json
+{
+    "SamplingRuleRecord": {
+        "SamplingRule": {
+            "RuleName": "Cruddur",
+            "RuleARN": "arn:aws:xray:us-east-1:926994502331:sampling-rule/Cruddur",
+            "ResourceARN": "*",
+            "Priority": 9000,
+            "FixedRate": 0.1,
+            "ReservoirSize": 5,
+            "ServiceName": "backend-flask",
+            "ServiceType": "*",
+            "Host": "*",
+            "HTTPMethod": "*",
+            "URLPath": "*",
+            "Version": 1,
+            "Attributes": {}
+        },
+        "CreatedAt": "2023-02-27T01:09:59+00:00",
+        "ModifiedAt": "2023-02-27T01:09:59+00:00"
+    }
+}
+```
+
+Add xray daemon to dockercompose
+Under backend-flask environment details enter:
+
+```yml
+AWS_XRAY_URL: "*4567-${GITPOD_WORKSPACE_ID}.${GITPOD_WORKSPACE_CLUSTER_HOST}*"
+AWS_XRAY_DAEMON_ADDRESS: "xray-daemon:2000"
+```
+Under services enter the following, ensure indentation is correct:
+
+```yml
+xray-daemon:
+    image: "amazon/aws-xray-daemon"
+    environment:
+      AWS_ACCESS_KEY_ID: "${AWS_ACCESS_KEY_ID}"
+      AWS_SECRET_ACCESS_KEY: "${AWS_SECRET_ACCESS_KEY}"
+      AWS_REGION: "ca-central-1"
+    command:
+      - "xray -o -b xray-daemon:2000"
+    ports:
+      - 2000:2000/udp
+```
+
+In the terminal enter: docker compose up
+
+Open the link to the backend server and  view logs on trace in xray console
+
+update user_activity file to test more logs
