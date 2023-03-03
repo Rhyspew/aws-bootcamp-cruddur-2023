@@ -227,4 +227,101 @@ In the terminal enter: docker compose up
 
 Open the link to the backend server and  view logs on trace in xray console
 
-update user_activity file to test more logs
+Update user_activity.py file to test more logs, changed to script below:
+
+```py
+  def run(user_handle):
+    # xray
+    segment = xray_recorder.begin_segment('user_activities')
+
+    model = {
+      'errors': None,
+      'data': None
+    }
+
+    now = datetime.now(timezone.utc).astimezone()
+    
+    if user_handle == None or len(user_handle) < 1:
+      model['errors'] = ['blank_user_handle']
+    else:
+      now = datetime.now()
+      results = [{
+        'uuid': '248959df-3079-4947-b847-9e0892d1bab4',
+        'handle':  'Bruce Banner',
+        'message': 'Hulk Smash!!!',
+        'created_at': (now - timedelta(days=1)).isoformat(),
+        'expires_at': (now + timedelta(days=31)).isoformat()
+      }]
+      model['data'] = results
+
+    # Xray
+    subsegment = xray_recorder.begin_subsegment('mock-data')
+    
+    dict = {
+      "now": now.isoformat(),
+      "results-size": len(model['data'])
+    }
+    subsegment.put_metadata('key', dict, 'namespace')
+
+    return model
+```
+
+Repeat steps to create logs via backend-flask url.
+
+## Cloudwatch
+
+Add watchtower to requirements.txt
+
+enter command in terminal: ping install -r requirements.txt
+
+In app.py enter the following code after the entry for xray to import tools needed for logging with CloudWatch:
+
+```py
+import watchtower
+import logging
+from time import strftime
+
+# Configuring Logger to Use CloudWatch
+LOGGER = logging.getLogger(__name__)
+LOGGER.setLevel(logging.DEBUG)
+console_handler = logging.StreamHandler()# cw_handler = watchtower.CloudWatchLogHandler(log_group='cruddur')
+LOGGER.addHandler(console_handler)
+LOGGER.addHandler(cw_handler)
+LOGGER.info("test log")
+```
+Add the following after frontend, backend and origins env get requests:
+
+```py
+@app.after_request
+def after_request(response):
+    timestamp = strftime('[%Y-%b-%d %H:%M]')
+    LOGGER.error('%s %s %s %s %s %s', timestamp, request.remote_addr, request.method, request.scheme, request.full_path, response.status)
+    return response
+```
+
+Find the following code and update with (logger=LOGGER)
+
+```py
+@app.route("/api/activities/home", methods=['GET'])
+def data_home():
+  data = HomeActivities.run(logger=LOGGER)
+  return data, 200
+```
+
+
+Update home_activities.py after function 'run()' :
+
+```py
+logger.info("HomeActivities")
+```
+Add 'logger' between parenthesis of run() function.
+
+Complete by editing docker-comose.yml, add the followin env variables to the backend-flask environment list:
+
+```yml
+      AWS_DEFAULT_REGION: "${AWS_DEFAULT_REGION}"
+      AWS_ACCESS_KEY_ID: "${AWS_ACCESS_KEY_ID}"
+      AWS_SECRET_ACCESS_KEY: "${AWS_SECRET_ACCESS_KEY}"
+```
+
+## Rollbar
