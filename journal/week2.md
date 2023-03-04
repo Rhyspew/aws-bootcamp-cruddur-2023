@@ -104,6 +104,8 @@ Enter 'docker compose up' in console and start the containers.
 Copy the backend server link and follow in a new window or tab, add /api/activities/home to the end of it and enter in browser. Refresh a few times. 
 Go to the honeycomb console and check the home page to confirm if data has been traced, a 404 code and a few 200 codes should have been saved if successful so far.
 
+![Honeycomb1](https://github.com/Rhyspew/aws-bootcamp-cruddur-2023/blob/main/_docs/assets/Honeycomb200.png)
+
 Update the backend file home_activities.js, entries to the beginning and end of the code. 
 Enter after the first entry then incorporate the rest into the function, make sure the code is indented correctly. 
 
@@ -124,6 +126,9 @@ Add to the end of the code just before 'return results'
 span.set_attribute("app.result_length", len(results))
 ```
 Repeat refresh of backend link with api/activities/home url. Check honeycomb for results. 
+
+![Honeycomb2](https://github.com/Rhyspew/aws-bootcamp-cruddur-2023/blob/main/_docs/assets/More%20Honeycomb.png)
+
 
 ## X-Ray
 
@@ -225,7 +230,9 @@ xray-daemon:
 
 In the terminal enter: docker compose up
 
-Open the link to the backend server and  view logs on trace in xray console
+Open the link to the backend server and  view logs on trace in xray console.
+
+![Xray1](https://github.com/Rhyspew/aws-bootcamp-cruddur-2023/blob/main/_docs/assets/Xray%20tracing.png)
 
 Update user_activity.py file to test more logs, changed to script below:
 
@@ -336,7 +343,13 @@ class UserActivities:
     return model
 ```
 
-Log into frontend url and switch between a user page and the home page to see log traces on AWS Xray
+Log into frontend url and switch between a user page and the home page to see log traces on AWS Xray.
+
+![XrayUpdate1](https://github.com/Rhyspew/aws-bootcamp-cruddur-2023/blob/main/_docs/assets/XRAY%20after%20segment%20update.png)
+
+
+![XrayUpdate2](https://github.com/Rhyspew/aws-bootcamp-cruddur-2023/blob/main/_docs/assets/Xray-Updated.png)
+
 
 ## Cloudwatch
 
@@ -378,7 +391,6 @@ def data_home():
   return data, 200
 ```
 
-
 Update home_activities.py after function 'run()' :
 
 ```py
@@ -394,7 +406,15 @@ Complete by editing docker-comose.yml, add the followin env variables to the bac
       AWS_SECRET_ACCESS_KEY: "${AWS_SECRET_ACCESS_KEY}"
 ```
 
-Change all AWS service lines of code to inline comments using the '#' at the start of each line of code so that they arent run and wont incurr costs. 
+Run service logs on backend url with '/api/activities/home' See logs in Cloudwatch group logs under 'Cruddur'
+
+![CloudWatchLogs](https://github.com/Rhyspew/aws-bootcamp-cruddur-2023/blob/main/_docs/assets/CloudWatchLoglist.png)
+
+
+![CloudwatchLogs2](https://github.com/Rhyspew/aws-bootcamp-cruddur-2023/blob/main/_docs/assets/CloudwatchLogs.png)
+
+
+Change all AWS service lines of code to inline comments using the '#' at the start of each line of code so that they do not run and wont incurr costs. 
 
 ## Rollbar
 
@@ -454,8 +474,12 @@ def rollbar_test():
     return "Hello World!"
 ```
 Next enter 'docker compose up' in the terminal and open a link from the backend server. Follow the link and enter /rollbar/test at the end of the url. 
-Ensure the text 'Hello World' is seen in the browser window. 
+Ensure the text 'Hello World' is seen in the browser window.  
 
-Go to Rollbar. After a minute or so, the menu should update and the new logs will be displayed. If the Cruddur app is working correctly, code 200 will be logged. To display a fault code I deleted two letters from 'return' at the bottom of the user_activities.py file. This caused an error which was picked up in Rollbar. 
+Go to Rollbar. After a minute or so, the menu should update and the new logs will be displayed. If the Cruddur app is working correctly, Hello World will be logged. To display a fault code I deleted two letters from 'return' at the bottom of the user_activities.py file. This caused an error which was picked up in Rollbar. 
+
+![HelloWorld](https://github.com/Rhyspew/aws-bootcamp-cruddur-2023/blob/main/_docs/assets/RollbarTest.png)
+
+![Error](https://github.com/Rhyspew/aws-bootcamp-cruddur-2023/blob/main/_docs/assets/Screenshot%202023-03-03%20at%2022.45.29.png)
 
 
