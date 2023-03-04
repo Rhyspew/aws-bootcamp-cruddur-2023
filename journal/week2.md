@@ -106,7 +106,7 @@ Go to the honeycomb console and check the home page to confirm if data has been 
 
 ![Honeycomb1](https://github.com/Rhyspew/aws-bootcamp-cruddur-2023/blob/main/_docs/assets/Honeycomb200.png)
 
-Update the backend file home_activities.js, entries to the beginning and end of the code. 
+Update the backend file home_activities.py, entries to the beginning and end of the code. 
 Enter after the first entry then incorporate the rest into the function, make sure the code is indented correctly. 
 
 ```py
@@ -154,6 +154,7 @@ xray_recorder.configure(service='backend-flask', dynamic_naming=xray_url)
 ```
 
 Add in after 'app = Flask(_name_)'
+
 ```py
 XRayMiddleware(app, xray_recorder)
 ```
@@ -206,7 +207,7 @@ gitpod /workspace/aws-bootcamp-cruddur-2023 (Week2) $ aws xray create-sampling-r
 }
 ```
 
-Add xray daemon to dockercompose
+Add xray daemon to docker-compose.yml
 Under backend-flask environment details enter:
 
 ```yml
@@ -343,7 +344,7 @@ class UserActivities:
     return model
 ```
 
-Log into frontend url and switch between a user page and the home page to see log traces on AWS Xray.
+Log into the frontend url and switch between a user page and the home page to see log traces on AWS Xray.
 
 ![XrayUpdate1](https://github.com/Rhyspew/aws-bootcamp-cruddur-2023/blob/main/_docs/assets/XRAY%20after%20segment%20update.png)
 
