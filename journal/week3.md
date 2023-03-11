@@ -2,11 +2,13 @@
 
 ## Amazon Cognito
 
-Cognito is Amazons native Authenication service. More details in this link. 
+Cognito is Amazons native Authenication service. More details in this link: [AWS Cognito](https://docs.aws.amazon.com/cognito/?icmpid=docs_homepage_security)
 
 Open the AWS management console
 Ensure region is correct
 Search for Cognito in the service tool searchbar. Open Cognito.
+
+![Create UserPool](https://github.com/Rhyspew/aws-bootcamp-cruddur-2023/blob/main/_docs/assets/CreateUserPool.png)
 
 Create a new user pool
 
@@ -28,6 +30,8 @@ Step 4 - Configure Message Delivery
 Send email with cognito
 Keep default from address
 
+![Step4](https://github.com/Rhyspew/aws-bootcamp-cruddur-2023/blob/main/_docs/assets/Step4Cognito.png)
+
 Step 5 - Integrate your app
 User Pool Name
 Leave the hosted UI box unticked
@@ -39,12 +43,17 @@ Step 6 - Review
 Complete
 Get User ID from user pool overview
 
-See the newly created user group 
+See the newly created user pool
+
+![UserPool](https://github.com/Rhyspew/aws-bootcamp-cruddur-2023/blob/main/_docs/assets/UserPoolCreated.png)
+
 Go to App integration tab and scroll to bottom for client id 
+
 
 ## AWS Amplify
 
-A hosting platform for applications
+A hosting platform for web applications. Follow this link for more info: [AWS Amplify](https://docs.aws.amazon.com/amplify/?icmpid=docs_homepage_fewebmobile)
+
 
 ### Download the amplify SDK in gitpod
 
@@ -207,15 +216,20 @@ In terminal to change user password:
 aws cognito-idp admin-set-user-password --username rpladmin1 --password Testing1234! --user-pool-id us-east-1_Qb26BWfMo --permanent
 ```
 
-Refresh on cognito user group in console to check 'Force Password' has changed to confirmed. 
+Refresh on cognito user group in console to check 'Force Password' has changed to 'confirmed'. 
 
 Click on new user then go to user attributes and edit. 
 
 Enter values for name and add attributes to raise and enter the preferred username field. 
 
-Test again on cruddur app, sign in using cognito user credentials. If signed in the following image will be seen. 
+Test again on cruddur app, sign in using cognito user credentials. 
 
-To create a user via the cruder app create edit the sign up page.
+
+If signed in the following image will be seen. 
+
+![Login]([https://github.com/Rhyspew/aws-bootcamp-cruddur-2023/blob/main/_docs/assets/InitialAppLogin.png](https://github.com/Rhyspew/aws-bootcamp-cruddur-2023/blob/main/_docs/assets/WUserName%26Name.png))
+
+To create a user via the cruddur app create edit the sign up page.
  
 SignupPage.js
 
@@ -302,6 +316,7 @@ Go through the app and sign up, complete the fields and use the confirmation cod
 
 The newly created user will now be confirmed in cognito. Log back into app to confirm. 
 
+![New user](https://github.com/Rhyspew/aws-bootcamp-cruddur-2023/blob/main/_docs/assets/SignUpNewAccount.png)
 
 To recover password if forgotten:
 recoverPage.js
@@ -336,6 +351,10 @@ line 24
     return false
   }
 ```
+
+Go to sign in page but click forgotten password, enter the login details to receive a message to update the password. 
+
+![Recovery](https://github.com/Rhyspew/aws-bootcamp-cruddur-2023/blob/main/_docs/assets/RecoveryPage.png) 
 
 ## Implement JWT Token
 
