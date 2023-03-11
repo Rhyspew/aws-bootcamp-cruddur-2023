@@ -47,6 +47,7 @@ See the newly created user pool
 
 ![UserPool](https://github.com/Rhyspew/aws-bootcamp-cruddur-2023/blob/main/_docs/assets/UserPoolCreated.png)
 
+Click on new user pool.
 Go to App integration tab and scroll to bottom for client id 
 
 
