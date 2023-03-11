@@ -228,7 +228,7 @@ Test again on cruddur app, sign in using cognito user credentials.
 
 If signed in the following image will be seen. 
 
-![Login]([https://github.com/Rhyspew/aws-bootcamp-cruddur-2023/blob/main/_docs/assets/InitialAppLogin.png](https://github.com/Rhyspew/aws-bootcamp-cruddur-2023/blob/main/_docs/assets/WUserName%26Name.png))
+![Login](https://github.com/Rhyspew/aws-bootcamp-cruddur-2023/blob/main/_docs/assets/WUserName%26Name.png)
 
 To create a user via the cruddur app create edit the sign up page.
  
