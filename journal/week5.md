@@ -92,6 +92,5 @@ INSERT INTO public.users (display_name, email, handle, cognito_user_id)
 VALUES
 ('Noah AWS','noah@theboa.com' , 'noah' ,'MOCK')
 
-Test in Cruddur app. 
-View and send messages. 
+Test in Cruddur app, could not get noah id to load so found that I could change the front end url to /messages/noah and insert a message from there. 
 
