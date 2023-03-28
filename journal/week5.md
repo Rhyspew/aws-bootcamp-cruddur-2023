@@ -48,7 +48,7 @@ Set AWS_COGNITO_USER_POOL_ID variables. export and gp env
 
 Create update_cognito_user_ids in bin/db folder
 
-Update setup to include new file.
+Update setup to include new file. make sure to replace 'source' with python to run the script. 
 
 Update db to display handle and sub details in update cognito uId return message.
 
@@ -74,6 +74,8 @@ Update Apps.js with new handle for message group pages
 
 Edited get_conversations to use correct year in message metadata. 
 
+Edited seed line 233 to display seeded messages in base time -3 hours to allow my messages to be seen. 
+
 Edit MessageGroupItem.js to include uuid. 
 
 Edit messages.py
@@ -84,13 +86,16 @@ In backend - db/sql/users create a new file create_message_users.sql
 In same folder create folder 
 Add 'from services.users_short import *' to app.py to reference new document and add in route at bottom of code. 
 
-Add new file to frontend src/components MessageGroupNewItem.js
+Add new file to frontend src/components: MessageGroupNewItem.js
+
+Edit MessageGroupFeed.js
 
 Added in new db user manually to test messages. 
 Connect into DB. 
 INSERT INTO public.users (display_name, email, handle, cognito_user_id)
 VALUES
-('Noah AWS','noah@theboa.com' , 'noah' ,'MOCK')
+  ('Leonardo Turtle','tmnt@ninja.com' , 'leo' ,'MOCK');
 
-Test in Cruddur app, could not get noah id to load so found that I could change the front end url to /messages/noah and insert a message from there. 
+Unable to view in feed. 
+
 
