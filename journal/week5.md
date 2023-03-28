@@ -82,6 +82,10 @@ Edit messages.py
 
 Edit create_message.py
 
+Add in files user_short.py in backend services
+
+Enter short.sql into db/sql/users
+
 In backend - db/sql/users create a new file create_message_users.sql
 In same folder create folder 
 Add 'from services.users_short import *' to app.py to reference new document and add in route at bottom of code. 
@@ -97,5 +101,27 @@ VALUES
   ('Leonardo Turtle','tmnt@ninja.com' , 'leo' ,'MOCK');
 
 Unable to view in feed. 
+
+Entered ./bin/ddb/schema-load prod into terminal. cruddur-messages was created in dynamoDB
+
+Go to AWS console and enter the DynamoDB menu. Turn on streams with new image. 
+
+Create a VPC Endpoint. Go to VPC menu, create endpoint, name it cruddur-ddb. Select DynamoDB as the service and select the defaults for the other options. Skip the policy creation and create. 
+
+Created a lambda function for the message stream - create a new role and associate with the default vpc
+Use the code from [cruddur-messaging-stream] 
+Update the permissions to include AWSLambdaInvocation-DynamoDB and custom policy from [cruddur-message-stream-policy.json]
+
+Comment out the AWS ENDPOINT URL in docker compose
+
+Play about with the cruddur app making sure to enter /new/<userhandle> after the message page url. 
+
+After adding some of the items to the DDB table with new user group ids and messages, I deleted the entries and checked the app, all messages had been deleted. 
+
+
+
+
+
+
 
 
