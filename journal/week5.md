@@ -2,11 +2,11 @@
 
 This week I created the DynamoDB for the app, with caching for the messaging service. 
 
-dd boto3 to requirements.txt
-Add pip install to gitpod.yml to install on start up
+Added boto3 to requirements.txt
+Added pip install to gitpod.yml to install on start up
 Rearranged bash scripts to be in separate folders and shorten names.
-Correct updates in db-setup file - now setup in db folder.
-Create ddb folder and add files. 
+Correct updates in db-setup file - now setup in [db](https://github.com/Rhyspew/aws-bootcamp-cruddur-2023/tree/main/backend-flask/bin/db) folder.
+Create [ddb](https://github.com/Rhyspew/aws-bootcamp-cruddur-2023/tree/main/backend-flask/bin/ddb) folder and add files. 
 change permissions and run schema-load
 Create another file in ddb - list-tables
 run list tables. See pics
@@ -36,11 +36,12 @@ Updated db/drop to only drop if table exists.
 psql $NO_DB_CONNECTION_URL -c "drop database IF EXISTS cruddur;"
 ```
 
-create ddb.py in the lib backend folder
+create ddb.py in the [lib](https://github.com/Rhyspew/aws-bootcamp-cruddur-2023/tree/main/backend-flask/lib) backend folder
 
-create cognito folder in bin - Create 
+create [cognito](https://github.com/Rhyspew/aws-bootcamp-cruddur-2023/tree/main/backend-flask/bin/cognito) folder in bin - Create 
 
 run code in terminal to find users in cognito user pool
+
 ```sh
 aws cognito-idp list-users --user-pool-id=<UPID>
 ```
@@ -104,6 +105,8 @@ Unable to view in feed.
 
 Entered ./bin/ddb/schema-load prod into terminal. cruddur-messages was created in dynamoDB
 
+## AWS Management Console
+### Lambda and DynamoDB
 Go to AWS console and enter the DynamoDB menu. Turn on streams with new image. 
 
 Create a VPC Endpoint. Go to VPC menu, create endpoint, name it cruddur-ddb. Select DynamoDB as the service and select the defaults for the other options. Skip the policy creation and create. 
@@ -112,11 +115,13 @@ Created a lambda function for the message stream - create a new role and associa
 Use the code from [cruddur-messaging-stream] 
 Update the permissions to include AWSLambdaInvocation-DynamoDB and custom policy from [cruddur-message-stream-policy.json]
 
+Add the lambda function as a trigger to the dynamoDb table. 
+
 Comment out the AWS ENDPOINT URL in docker compose
 
 Play about with the cruddur app making sure to enter /new/<userhandle> after the message page url. 
 
-After adding some of the items to the DDB table with new user group ids and messages, I deleted the entries and checked the app, all messages had been deleted. 
+After adding some of the items to the DDB table with new user group ids and messages, I deleted the entries and checked the app, all messages had been deleted. Checked CloudWatch logs to ensure entries had been recorded. 
 
 
 
