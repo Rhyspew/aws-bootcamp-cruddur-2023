@@ -6,7 +6,7 @@
     "enableExecuteCommand": true,
     "loadBalancers": [
       {
-        "targetGroupArn": "arn:aws:elasticloadbalancing:us-east-1:926994502331:targetgroup/cruddur-backend-flask-tg/da72c4a75f413650",
+        "targetGroupArn": "arn:aws:elasticloadbalancing:us-east-1:926994502331:targetgroup/cruddur-backend-flask-tg/380ec20ce1fb5736",
         "containerName": "backend-flask",
         "containerPort": 4567
       }
@@ -16,7 +16,7 @@
       "awsvpcConfiguration": {
         "assignPublicIp": "ENABLED",
         "securityGroups": [
-          "sg-056fb30a2dc7b22eb"
+          "sg-00cfca1a302affa44"
         ],
         "subnets": [
           "subnet-00ea5ce44541b6a1c",
