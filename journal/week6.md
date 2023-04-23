@@ -5,14 +5,14 @@ Fargate is an AWS native service that allows server less orchestration of contai
 
 I also used Route 53 as my DNS service to associate my domain name rpldev.co.uk with the app and created a secure link using Amazon Certificate Manager. This was all linked via an application load balancer and secured with security groups. 
 
-Moved all bin files to root folder, change references in files to reflect new file locations. Ensure permissions of all files are executable so that they can be used during set up. 
+Moved all bin files to root folder, change references in files to reflect new file locations. Ensure permissions of all files are executable so that they can be used during set up. [bin/](https://github.com/Rhyspew/aws-bootcamp-cruddur-2023/tree/main/bin)
 
 Create new folders for backend and frontend and add files within to help automate commands such as to build and push containers to ECR/local. 
 
-Create erb folder 
+Create [erb](https://github.com/Rhyspew/aws-bootcamp-cruddur-2023/tree/main/erb) folder 
 Create files for backend and frontend environments using ruby. 
-Create files in backend and frontend to generate local environments named generate-env
-
+Create files in backend and frontend to generate local environments named generate-env. 
+Edit [Docker compose](https://github.com/Rhyspew/aws-bootcamp-cruddur-2023/blob/main/docker-compose.yml) so that new environment cruddur-net can be launched, remove env variable list.   
 
 Create a new file in bin/db/test
 ```py
@@ -111,6 +111,8 @@ docker pull python:3.10-slim-buster
 docker tag python:3.10-slim-buster $ECR_PYTHON_URL:3.10-slim-buster
 docker push $ECR_PYTHON_URL:3.10-slim-buster
 ```
+
+![PythonECR](https://github.com/Rhyspew/aws-bootcamp-cruddur-2023/blob/main/_docs/Week6-7/ECR-Pull-Image-Console.png)
 
 Go to ECR console to confirm upload. Copy endpoint address.
 Go to Dockerfile and replace slim buster with ecr endpoint
@@ -347,8 +349,6 @@ Add updates to gitpod.yml line 28
       cd backend-flask
 ```
 
-Next create new file connect-to-service in new folder bin/ecs
-
 Change security group rules to allow access, port 4567. 
 Connect to ecs task via browser and public ip, find in task network bindings tab
 change default SG to include ingress from new sg with postgre ports.
@@ -432,7 +432,6 @@ Update bucket permissions to allow feed from ALB logs - use this [AWS Whitepaper
 
 Back in alb menu set monitoring on for access logs and set s3 uri to:
 s3://cruddur-alb-access-logs
-
 
 Next create scripts to run frontend containers
 Create frontend-react-js.json
@@ -523,6 +522,8 @@ aws ecs execute-command  \
 
 If all is correct the frontend container should be healthy and connection is available from the alb dns name with port 3000 attached. 
 
+![CrudHome](https://github.com/Rhyspew/aws-bootcamp-cruddur-2023/blob/main/_docs/Week6-7/CruddurHomePage%20ViaALB%20.png)
+
 The next step is to create a hosted zone - I used the name 'rpldev.co.uk' from ionos.
 Copy the ns values from R53 into the name servers in Ionos and wait for them to upload.
 Go to certificate manager and request a public certificate to the domain names:
@@ -557,12 +558,7 @@ Run new backend task definition to update with command;
 aws ecs register-task-definition --cli-input-json file://aws/task-definitions/backend-flask.json
 
 Build new app with updated url using build bash script in bin/frontend
-
-Tag and push the image
-```sh
-docker tag frontend-react-js:latest $ECR_FRONTEND_REACT_URL:latest
-docker push $ECR_FRONTEND_REACT_URL:latest
-```
+Tag and push the image via bin/backend/push
 
 For further testing limit the alb sg for access only to my ip in source box
 
@@ -592,8 +588,8 @@ CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0", "--port=4567", "--no-d
 
 To build docker file: docker build -f Dockerfile.prod -t backend-flask.prod .
 
-## Fix messaging problems
-Populate RDS prod db with new users. Use db/connect prod
+### Fix other problems. 
+Populate RDS prod db with new users. Use ./bin/db/connect prod
 Use INSERT command to insert new info into schema
 
 If duplicate inserts have been made, delete using the following command:
@@ -601,7 +597,7 @@ DELETE FROM users where uuid = '<UUID>';
 
 Update db/seed file. Run seed bash script (or setup)
 
-seed ddb file if necessary to produce messaging examples to confirm connectivity.  
+Load ddb schema file if necessary to allow messaging.  
 
 To get rid of a value return error go to backend-flask/lib/db.py
 Change line 82 to:
@@ -609,8 +605,18 @@ return "{}"
 
 Fix Cognito Auth Error
 Update the auth descriptions to allow token refresh in app. 
-Update the following files:
-Homefeed.js
+Update the following as done in this [commit](https://github.com/Rhyspew/aws-bootcamp-cruddur-2023/commit/ba788230ea2aec7ce5305bb9f54113d688a6bf90)
+  
 
+### Testing
+
+Log into ECR. 
+Build backend and Frontend containers using bash scripts then run push scripts after builds are complete.  
+Make sure RDS is running, connect to the table to confirm a schema and seed data are loaded. 
+Make sure dynamodb has a table loaded.
+Start the backend and frontend services.
+Connect to the frontend by entering the saved domain name.
+Play around with the app, enter activities or messages. Any returns following a post will confirm the backend is functioning. 
+  
 
 
