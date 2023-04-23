@@ -15,7 +15,7 @@ RUN pip3 install -r requirements.txt
 COPY . .
 
 # 
-ENV FLASK_ENV=development
+ENV FLASK_DEBUG=1
 
 #
 EXPOSE ${PORT}

@@ -114,10 +114,14 @@ def init_rollbar():
     # send exceptions from `app` to rollbar, using flask's signal system.
     got_request_exception.connect(rollbar.contrib.flask.report_exception, app)
 
-@app.route('/rollbar/test')
-def rollbar_test():
-    rollbar.report_message('Hello World!', 'warning')
-    return "Hello World!"
+# @app.route('/rollbar/test')
+# def rollbar_test():
+#     rollbar.report_message('Hello World!', 'warning')
+#     return "Hello World!"
+
+@app.route('/api/health-check')
+def health_check():
+    return {'success': True}, 200
 
 @app.route("/api/message_groups", methods=['GET'])
 def data_message_groups():
@@ -200,7 +204,7 @@ def data_create_message():
 
 
 @app.route("/api/activities/home", methods=['GET'])
-#@xray_recorder.capture('activities_home')
+@xray_recorder.capture('activities_home')
 def data_home():
   access_token = extract_access_token(request.headers)
   try:
@@ -223,7 +227,7 @@ def data_notifications():
   return data, 200
 
 @app.route("/api/activities/@<string:handle>", methods=['GET'])
-#@xray_recorder.capture('activities_users')
+@xray_recorder.capture('activities_users')
 def data_handle(handle):
   model = UserActivities.run(handle)
   if model['errors'] is not None:
