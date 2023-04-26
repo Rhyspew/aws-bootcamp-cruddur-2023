@@ -619,4 +619,10 @@ Connect to the frontend by entering the saved domain name.
 Play around with the app, enter activities or messages. Any returns following a post will confirm the backend is functioning. 
   
 
-
+Finsihed app should look similar to the following images:
+  
+![Cruddur](https://github.com/Rhyspew/aws-bootcamp-cruddur-2023/blob/main/_docs/Week6-7/Screenshot%202023-04-26%20at%2020.30.21.png)
+  
+![Messages](https://github.com/Rhyspew/aws-bootcamp-cruddur-2023/blob/main/_docs/Week6-7/Screenshot%202023-04-26%20at%2020.30.45.png)
+  
+  
